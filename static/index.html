@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GSU CampusIT Copilot | AI ServiceNow Technical Support Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="gsu-header">
+    <div class="header-inner">
+      <div class="brand-group">
+        <div class="gsu-crest">
+          <span class="crest-main">GSU</span>
+          <span class="crest-sub">IIT</span>
+        </div>
+        <div class="brand-titles">
+          <div class="brand-top-row">
+            <h1>CampusIT Copilot</h1>
+            <span class="badge-live" id="health-badge">● Checking API…</span>
+          </div>
+          <p class="brand-subtitle">
+            Georgia State University Technology Service Desk • Grounded in
+            <a href="https://gsutech.service-now.com/sp" target="_blank" rel="noopener noreferrer">gsutech.service-now.com/sp ↗</a>
+          </p>
+        </div>
+      </div>
+      <nav class="nav-tabs" role="tablist">
+        <button class="nav-tab active" data-tab="copilot" role="tab" aria-selected="true">💬 AI Support Copilot</button>
+        <button class="nav-tab" data-tab="kb" role="tab" aria-selected="false">📚 ServiceNow KB (<span id="kb-count-pill">7</span>)</button>
+        <button class="nav-tab" data-tab="eval" role="tab" aria-selected="false">📊 120-Q Evaluation & Telemetry</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section id="tab-copilot" class="tab-panel active">
+      <div class="copilot-grid">
+        <aside class="copilot-sidebar">
+          <div class="panel-card">
+            <h2 class="card-title">⚡ Common Student IT Issues</h2>
+            <p class="card-desc">Click a real GSU student scenario to test RAG retrieval and safety guardrails:</p>
+            <div class="scenario-list">
+              <button class="scenario-btn" data-prompt="I got a new iPhone and now Duo Push isn't working when I try to log into PAWS. I kept my same phone number.">
+                <span class="scen-tag">Duo MFA</span>
+                <span class="scen-text">"Got a new iPhone and Duo Push isn't working"</span>
+              </button>
+              <button class="scenario-btn" data-prompt="My laptop says 'Unable to join the network eduroam' after I changed my CampusID password.">
+                <span class="scen-tag">eduroam Wi-Fi</span>
+                <span class="scen-text">"Unable to join eduroam Wi-Fi after password change"</span>
+              </button>
+              <button class="scenario-btn" data-prompt="I forgot my GSU CampusID password and got locked out after 5 failed attempts. How do I unlock and reset it?">
+                <span class="scen-tag">CampusID</span>
+                <span class="scen-text">"Forgot CampusID password & locked out"</span>
+              </button>
+              <button class="scenario-btn scenario-danger" data-prompt="I lost my phone AND changed my phone number so I have no backup codes for Duo MFA. I need a bypass code!">
+                <span class="scen-tag tag-danger">🚨 Guardrail Escalation</span>
+                <span class="scen-text">"Lost phone + changed phone number + no Duo codes"</span>
+              </button>
+              <button class="scenario-btn scenario-danger" data-prompt="I think my GSU PantherMail account was hacked after I clicked a suspicious phishing link!">
+                <span class="scen-tag tag-danger">🚨 Security Escalation</span>
+                <span class="scen-text">"Clicked a phishing link & think account is hacked"</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="chat-container">
+          <div class="chat-header">
+            <div>
+              <h2>GSU Virtual IT Support Engineer</h2>
+              <span class="chat-sub">Multi-Turn RAG • Verified ServiceNow Citations • Safety Guardrails</span>
+            </div>
+            <button id="clear-chat-btn" class="btn-secondary">🔄 New Session</button>
+          </div>
+          <div id="chat-messages" class="chat-messages">
+            <div class="message assistant-message">
+              <div class="msg-avatar">🐾</div>
+              <div class="msg-bubble">
+                <div class="msg-meta"><strong>GSU CampusIT Copilot</strong><span class="meta-badge">Grounded RAG System</span></div>
+                <div class="msg-content">
+                  <p>Welcome to the <strong>Georgia State University AI Technical Support Assistant</strong>! Ask me about Duo MFA, CampusID passwords, eduroam Wi-Fi, PantherMail, VPN, or iCollege.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <form id="chat-form" class="chat-input-bar">
+            <input type="text" id="chat-input" placeholder="Describe your GSU IT issue..." autocomplete="off" required />
+            <button type="submit" id="send-btn" class="btn-primary">Ask Copilot ➤</button>
+          </form>
+        </div>
+
+        <aside class="rag-inspector" id="rag-inspector">
+          <div class="panel-card inspector-card">
+            <div class="inspector-header">
+              <h2 class="card-title">🔍 RAG Source & Vector Inspector</h2>
+              <span class="inspector-sub">Top-K Knowledge Article Retrieval</span>
+            </div>
+            <div id="inspector-content" class="inspector-body">
+              <div class="empty-inspector">
+                <div class="empty-icon">🧭</div>
+                <p>Send a message or click any <strong>[KB001xxxx]</strong> citation badge to inspect retrieved GSU chunks.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="tab-kb" class="tab-panel">
+      <div class="kb-header-bar">
+        <div>
+          <h2>📚 Indexed GSU ServiceNow Knowledge Base (`ChromaDB`)</h2>
+          <p>Responses are strictly grounded in official GSU IT documentation.</p>
+        </div>
+        <input type="search" id="kb-search-input" class="kb-search" placeholder="Filter KB articles..." />
+      </div>
+      <div id="kb-articles-grid" class="kb-grid"></div>
+    </section>
+
+    <section id="tab-eval" class="tab-panel">
+      <div class="eval-top-banner">
+        <div>
+          <h2>📊 Automated LLM & RAG Evaluation Harness (120 GSU Test Scenarios)</h2>
+          <p>Benchmarks Retrieval Hit Rate, Citation Faithfulness, and Safety Guardrails.</p>
+        </div>
+        <button id="run-eval-btn" class="btn-primary btn-eval-run">▶ Run 120-Question Benchmark Now</button>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card"><span class="kpi-label">Retrieval Hit Rate (Top-3)</span><strong class="kpi-value" id="kpi-hit-top3">--%</strong><span class="kpi-foot" id="kpi-hit-top1">Top-1: --%</span></div>
+        <div class="kpi-card"><span class="kpi-label">Grounded Citation Accuracy</span><strong class="kpi-value" id="kpi-citation">--%</strong><span class="kpi-foot">Verified [KB001xxxx]</span></div>
+        <div class="kpi-card"><span class="kpi-label">Guardrail Accuracy</span><strong class="kpi-value" id="kpi-esc-acc">--%</strong><span class="kpi-foot" id="kpi-esc-pr">Precision/Recall</span></div>
+        <div class="kpi-card"><span class="kpi-label">Dataset Size</span><strong class="kpi-value">120</strong><span class="kpi-foot" id="kpi-exec-time">Execution Time: --s</span></div>
+      </div>
+      <div class="eval-split-grid">
+        <div class="panel-card"><h3 class="card-title">📋 Breakdown by Category</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>Category</th><th>Count</th><th>Retrieval</th><th>Citation</th><th>Guardrail</th></tr></thead><tbody id="eval-category-tbody"><tr><td colspan="5">Loading...</td></tr></tbody></table></div></div>
+        <div class="panel-card"><h3 class="card-title">📡 Live Session Telemetry</h3><div class="table-wrap"><table class="data-table"><thead><tr><th>Time</th><th>Query</th><th>Top KB</th><th>Sim</th><th>Outcome</th></tr></thead><tbody id="telemetry-tbody"><tr><td colspan="5">No live queries yet.</td></tr></tbody></table></div></div>
+      </div>
+    </section>
+  </main>
+  <script src="/static/app.js?v=topic-fix-2"></script>
+</body>
+</html>
